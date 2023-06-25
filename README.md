@@ -93,7 +93,7 @@ For WebView based browsers, these menu items are presented in the context menu.
 ## Bonus
 
 Since WebView based browsers have no unified designs, the following
-first three features are not supported for them.
+first four features are not supported for them.
 
 ### Open in Chrome
 
@@ -115,6 +115,10 @@ One can disable it through the `Developer options` menu.
 ChromeXt adds a book icon in the page menu to enable reader (distiller) mode manually.
 
 This function is not available in `Brave` browser for unknown reason.
+
+### Export browser bookmarks
+
+Bookmarks can be exported in HTML format through the `Developer options` menu.
 
 ### AD Blocker solution
 
@@ -191,4 +195,7 @@ Here are corresponding files you might want / need to change:
 - [ ] ~~Turn Xposed into optional dependency~~
 - [x] Fully support WebView based browsers
 - [x] Fix [LSPatch for isolated process](https://github.com/LSPosed/LSPatch/issues/190) issue
+- [x] Implement UserScript storage
+- [x] Re-implement GM_xmlhttpRequest
+- [x] Convert exported bookmarks to HTML format
 - [ ] Add recommended scripts to the front end manager
