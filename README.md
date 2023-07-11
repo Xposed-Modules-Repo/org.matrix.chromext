@@ -22,7 +22,9 @@ Most WebView based browsers are also supported, if not, please report it.
 
 ## Usage
 
-Currently, this project requires **Xposed framework** installed.
+<p align="center"><a href="https://www.youtube.com/watch?v=1Qm4dU-XnJM"><img src="https://img.youtube.com/vi/1Qm4dU-XnJM/0.jpg" /></a></p>
+
+ChromeXt requires **Xposed framework**.
 
 For root users, install [LSPosed](https://github.com/LSPosed/LSPosed) first,
 pick up the latest built APK from my repo's [GitHub Action](https://github.com/JingMatrix/ChromeXt/actions) and install it.
@@ -198,4 +200,9 @@ Here are corresponding files you might want / need to change:
 - [x] Implement UserScript storage
 - [x] Re-implement GM_xmlhttpRequest
 - [x] Convert exported bookmarks to HTML format
-- [ ] Add recommended scripts to the front end manager
+- [x] Show executed scripts on current page
+- [x] Make a YouTube presentation video
+- [ ] Support importing UserScripts from Tampermonkey exports
+- [ ] Support backup and restore
+- [ ] Add recommended UserScripts to the front end manager
+- [ ] Add [chrome devtools front-end](https://chromium.googlesource.com/devtools/devtools-frontend/) for Edge, see [devtools_http_handler.cc](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_http_handler.cc) as reference.
