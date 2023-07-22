@@ -1,6 +1,8 @@
-# ChromeXt
+# [ChromeXt](https://github.com/JingMatrix/ChromeXt)
 
 Add UserScript and DevTools supports to Chromium based and WebView based browsers using Xposed framework.
+
+*Note*: this repo is only for uploading Xposed Modules releases, the orginal project is [ChromeXt](https://github.com/JingMatrix/ChromeXt).
 
 ##  How does it work?
 
