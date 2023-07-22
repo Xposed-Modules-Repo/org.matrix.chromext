@@ -1,24 +1,19 @@
-# [ChromeXt](https://github.com/JingMatrix/ChromeXt)
+# ChromeXt
 
 Add UserScript and DevTools supports to Chromium based and WebView based browsers using Xposed framework.
-
-*Note*: this repo is only for uploading Xposed Modules releases, the orginal project is [ChromeXt](https://github.com/JingMatrix/ChromeXt).
 
 ##  How does it work?
 
 We hook the `onUpdateUrl` function in [UserScript.kt](app/src/main/java/org/matrix/chromext/hook/UserScript.kt),
-add URL comparison there and evaluate JavaScript using the `javascript:` scheme.
+add URL comparison there and evaluate JavaScript using the `javascript:` scheme (or DevTools Protocol when possible).
 
 Chromium based browsers,
+such as [Egde](https://www.microsoft.com/en-us/edge/download),
 [Bromite](https://github.com/bromite/bromite),
-[Thorium](https://github.com/Alex313031/thorium),
-[Mulch](https://gitlab.com/divested-mobile/mulch),
-and [Brave](https://github.com/brave/brave-browser) are also fully supported.
-Due to different design ideas, supports for the following browsers are not perfect:
-1. [Egde](https://www.microsoft.com/en-us/edge/download), `DevTools` front end is removed by its authors;
-2. [Vivaldi](https://vivaldi.com/en/android/), `Developer options` menu is removed by its authors.
+and [Brave](https://github.com/brave/brave-browser), are fully supported.
 
 Most WebView based browsers are also supported, if not, please report it.
+Note for WebView based browsers users: you _only_ need to enable this module for the browser application you wish to use, _not_ for any possible WebView applications, _neither_ for Android system.
 
 ## Usage
 
@@ -31,21 +26,20 @@ pick up the latest built APK from my repo's [GitHub Action](https://github.com/J
 
 For non-root users,
 I modify a bit [LSPatch](https://github.com/JingMatrix/LSPatch) to support `ChromeXt`; here is how to use it:
-1. Download the latest `lspatch-release` from my [Github Action](https://github.com/JingMatrix/LSPatch/actions).
-2. Download the latest `ChromeXt.apk` from my [Github Action](https://github.com/JingMatrix/ChromeXt/actions).
+1. Download the latest `lspatch-release` from my [GitHub Actions](https://github.com/JingMatrix/LSPatch/actions).
+2. Download the latest `ChromeXt.apk` from my [GitHub Actions](https://github.com/JingMatrix/ChromeXt/actions).
 3. Extract previously downloaded files to get files `lspatch.jar` (with some suffix) and `ChromeXt-signed.apk`.
 4. Patch your APK (taking `arm64_ChromePublic.apk` as example) using the following command: `java -jar lspatch.jar arm64_ChromePublic.apk -d -v -m ChromeXt-signed.apk --force`. If `java` environment is not available, consider using the provided `manager` APK.
 5. Install the patched APK, which might require you to first uninstall the one on your phone.
 
+Notes: currently _to download_ files from `GitHub Actions`, one needs to log in GitHub.
+
 The author uploads releases to [Xposed-Modules-Repo](https://github.com/Xposed-Modules-Repo/org.matrix.chromext/releases) when needed, but not that frequently.
 
 You can then install UserScripts from popular sources: URLs that ends with `.user.js`.
-However, this fails for scripts from some domains like `raw.githubusercontent.com`.
-For them, one can download those scripts using the download button on the top of Chrome's three dot menu, and
-then open your downloaded scripts in Chrome. The installation prompt should show up again.
-Alternatively, it is possible to use the `Install UserScript` page menu if you simply want to install it
+However, this fails for UserScripts from some domains like `raw.githubusercontent.com`.
+For them, use the `Install UserScript` page menu if you simply want to install them
 without further editing.
-
 
 ### Supported API
 
@@ -56,9 +50,12 @@ Currently, ChromeXt supports almost all [Tampermonkey APIs](https://www.tampermo
 3. @include = @match, @exclude
 4. @run-at: document-start, document-end, document-idle (the default and fallback value)
 5. @grant GM_addStyle, GM_addElement, GM_xmlhttpRequest, GM_openInTab, GM_registerMenuCommand (`Resources` panel of eruda), GM_unregisterMenuCommand, GM_download, unsafeWindow (= window)
-6. @require, @resource (Without [Subresource Integrity](https://www.tampermonkey.net/documentation.php#api:Subresource_Integrity))
+6. @grant GM_setValue, GM_getValue (less powerful than GM.getValue), GM_listValues, GM_addValueChangeListener, GM_removeValueChangeListener
+7. @require, @resource (Without [Subresource Integrity](https://www.tampermonkey.net/documentation.php#api:Subresource_Integrity))
 
-These APIs are implemented differently from the official ones, see the source file [LocalScripts.kt](app/src/main/java/org/matrix/chromext/script/LocalScripts.kt) if you have doubts or questions.
+These APIs are implemented differently from the official ones, see the source file
+[LocalScripts.kt](app/src/main/java/org/matrix/chromext/script/LocalScripts.kt) and
+[local_script.js](app/src/main/assets/local_script.js) if you have doubts or questions.
 
 ### UserScripts manager front end
 
@@ -69,21 +66,9 @@ To manage scripts installed by `ChromeXt`, here are a simple front end hosted on
 If you cancel the prompt of installing a new UserScript, then you can edit it directly in Chrome.
 Use the `Install UserScript` page menu to install your modified UserScript.
 
-### Limitations
-
-A valid UserScript fails if the following two conditions hold _at the same time_:
-
-1. The matched website has disabled `script-src 'unsafe-eval';` by [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP);
-2. The script size is nearly 2M.
-
-To deal with this extremely rare case, one should
-```
-use multiple scripts of normal sizes instead of a giant script
-```
-
 ### DevTools for developers
 
-From three dots page menu, ChromeXt offers you
+From the three dots page menu, ChromeXt offers you
 1. `Developer tools` in the UserScript manager front end,
 2. `Eruda console` in other pages.
 
@@ -111,12 +96,11 @@ The history forward gesture of Chrome is now available near the vertical center 
 On other areas, only the system gesture is available.
 One can disable it through the `Developer options` menu.
 (Tap seven times on the Chrome version from the Chrome settings, you will see the `Developer options` menu.)
+(In [Vivaldi](https://vivaldi.com/en/android/) browsers, `Developer options` menu is removed by its authors.)
 
 ### Enable reader mode manually
 
 ChromeXt adds a book icon in the page menu to enable reader (distiller) mode manually.
-
-This function is not available in `Brave` browser for unknown reason.
 
 ### Export browser bookmarks
 
@@ -134,7 +118,6 @@ where one can manage previous added filters.
 These filters are saved in the browser even after clearing the site's data.
 
 Another way to block ADs is using the [Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src) to block some scripts from loading.
-See the official [Content-Security-Policy Blocker](app/src/main/assets/CSP.user.js) UserScript.
 
 ### User-Agent spoofing
 
@@ -156,6 +139,7 @@ Before you submit your pull-requests, please ensure that the command
 Here are corresponding files you might want / need to change:
 1. Front end: [manager.vue](https://github.com/JingMatrix/viteblog/tree/master/components/ChromeXt/manager.vue)
 2. Tampermonkey API: [LocalScripts.kt](app/src/main/java/org/matrix/chromext/script/LocalScripts.kt)
+and [local_script.js](app/src/main/assets/local_script.js)
 3. Eruda configuration: [local_eruda.js](app/src/main/assets/local_eruda.js)
 4. Support more WebView based browsers: [WebViewHook.kt](app/src/main/java/org/matrix/chromext/hook/WebViewHook.kt)
 
@@ -170,7 +154,6 @@ Here are corresponding files you might want / need to change:
 - [x] Add more information in the preference screen
 - [x] Support more [Tampermonkey API](https://www.tampermonkey.net/documentation.php)s
 - [x] Find elegant way to support DevTools for Android 11-
-- [x] Improve front end
 - [x] Add cosmetic AdBlocker using eruda
 - [x] Find way to get current interactive tab
 - [x] Remove AndroidX Room dependency to reduce app size
@@ -183,18 +166,15 @@ Here are corresponding files you might want / need to change:
 - [x] Support @resource API
 - [x] Make GestureNav Fix optional
 - [x] Add an open source License
-- [ ] ~~Support mocking User-Agent~~
+- [x] Support mocking User-Agent
 - [ ] ~~Support [urlFilter](https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#type-RuleCondition) syntax~~
 - [x] Improve `Open in Chrome` function
 - [x] Implement fully `GM_info`
 - [x] Eruda fails due to [Injection Sinks](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API)
 - [x] Hide page_info panel automatically
-- [ ] ~~Fix Edge browser DevTools inspect url~~
-- [ ] ~~Get correct Chromium version~~
 - [x] Fix page menu injection position
 - [ ] ~~Use [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) as UserScript engine~~
 - [ ] ~~Use `adb forward` to support non-root users~~
-- [ ] ~~Turn Xposed into optional dependency~~
 - [x] Fully support WebView based browsers
 - [x] Fix [LSPatch for isolated process](https://github.com/LSPosed/LSPatch/issues/190) issue
 - [x] Implement UserScript storage
@@ -202,8 +182,8 @@ Here are corresponding files you might want / need to change:
 - [x] Convert exported bookmarks to HTML format
 - [x] Show executed scripts on current page
 - [x] Make a YouTube presentation video
-- [ ] Use `iframe` and `file://` scheme to run general [WebExtensions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions)
+- [ ] Use `iframe` and local server to run general [WebExtensions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions)
 - [ ] Support importing UserScripts from Tampermonkey exports
 - [ ] Support backup and restore
 - [ ] Add recommended UserScripts to the front end manager
-- [ ] Add [chrome devtools front-end](https://chromium.googlesource.com/devtools/devtools-frontend/) for Edge, see [devtools_http_handler.cc](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_http_handler.cc) as reference.
+- [x] Add [chrome devtools front-end](https://chromium.googlesource.com/devtools/devtools-frontend/) for Edge, see [devtools_http_handler.cc](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_http_handler.cc) as reference.
