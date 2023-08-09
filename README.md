@@ -10,6 +10,7 @@ add URL comparison there and evaluate JavaScript using the `javascript:` scheme 
 Chromium based browsers,
 such as [Egde](https://www.microsoft.com/en-us/edge/download),
 [Bromite](https://github.com/bromite/bromite),
+[Samsung Internet](https://en.wikipedia.org/wiki/Samsung_Internet),
 and [Brave](https://github.com/brave/brave-browser), are fully supported.
 
 Most WebView based browsers are also supported, if not, please report it.
@@ -37,25 +38,27 @@ Notes: currently _to download_ files from `GitHub Actions`, one needs to log in 
 The author uploads releases to [Xposed-Modules-Repo](https://github.com/Xposed-Modules-Repo/org.matrix.chromext/releases) when needed, but not that frequently.
 
 You can then install UserScripts from popular sources: URLs that ends with `.user.js`.
-However, this fails for UserScripts from some domains like `raw.githubusercontent.com`.
-For them, use the `Install UserScript` page menu if you simply want to install them
-without further editing.
 
 ### Supported API
 
 Currently, ChromeXt supports almost all [Tampermonkey APIs](https://www.tampermonkey.net/documentation.php?locale=en):
 
-1. @name (colons and backslashes not allowed), @namespace (backslashes not allowed), @description and so on
-2. @match (must present and conform to the [Chrome Standard](https://developer.chrome.com/docs/extensions/mv2/match_patterns/))
+1. @name (colons not allowed), @namespace, @description and so on
+2. @match (use the [Chrome Standard](https://developer.chrome.com/docs/extensions/mv2/match_patterns/), supports regular expressions)
 3. @include = @match, @exclude
 4. @run-at: document-start, document-end, document-idle (the default and fallback value)
-5. @grant GM_addStyle, GM_addElement, GM_xmlhttpRequest, GM_openInTab, GM_registerMenuCommand (`Resources` panel of eruda), GM_unregisterMenuCommand, GM_download, unsafeWindow (= window)
-6. @grant GM_setValue, GM_getValue (less powerful than GM.getValue), GM_listValues, GM_addValueChangeListener, GM_removeValueChangeListener
+5. @grant GM_addStyle, GM_addElement, GM_xmlhttpRequest, GM_openInTab, GM_registerMenuCommand (shown in the `Resources` panel of eruda), GM_unregisterMenuCommand, GM_download, unsafeWindow (= window)
+6. @grant GM_setValue, GM_getValue (less powerful than GM.getValue), GM_listValues, GM_addValueChangeListener, GM_removeValueChangeListener, GM_setClipboard
 7. @require, @resource (Without [Subresource Integrity](https://www.tampermonkey.net/documentation.php#api:Subresource_Integrity))
 
-These APIs are implemented differently from the official ones, see the source file
-[LocalScripts.kt](app/src/main/java/org/matrix/chromext/script/LocalScripts.kt) and
-[local_script.js](app/src/main/assets/local_script.js) if you have doubts or questions.
+These APIs are implemented differently from the official ones, refer to the source files
+[Local.kt](app/src/main/java/org/matrix/chromext/script/Local.kt) and
+[GM.js](app/src/main/assets/GM.js) if you have doubts or questions.
+
+Moreover, there is the powerful (dangerous) `GM.ChromeXt` API, which must be declared by `@grant GM.ChromeXt` to _unlock_ its usage.
+It is locked by default so that the users are protected from malicious UserScripts exploiting ChromeXt.
+This API allows scripts to use the JavaScript method `ChromeXt.dispatch(action, payload)`, which is fundamental to implement other APIs. (Hence, one can find usage examples in [GM.js](app/src/main/assets/GM.js)).
+Dispatched `action` and `payload` are handled by [Listener.kt](app/src/main/java/org/matrix/chromext/Listener.kt).
 
 ### UserScripts manager front end
 
@@ -75,12 +78,13 @@ From the three dots page menu, ChromeXt offers you
 For `Edge` browser, these menus are moved to the page info menu,
 which locates at the left corner inside the URL input bar.
 
-For WebView based browsers, these menu items are presented in the context menu.
+For WebView based browsers and _Samsung Internet_, these menu items are presented in the context menu.
 
 ## Bonus
 
 Since WebView based browsers have no unified designs, the following
 first four features are not supported for them.
+(Unfortunately, they are neither supported for _Samsung Internet_.)
 
 ### Open in Chrome
 
@@ -138,10 +142,10 @@ Before you submit your pull-requests, please ensure that the command
 
 Here are corresponding files you might want / need to change:
 1. Front end: [manager.vue](https://github.com/JingMatrix/viteblog/tree/master/components/ChromeXt/manager.vue)
-2. Tampermonkey API: [LocalScripts.kt](app/src/main/java/org/matrix/chromext/script/LocalScripts.kt)
-and [local_script.js](app/src/main/assets/local_script.js)
-3. Eruda configuration: [local_eruda.js](app/src/main/assets/local_eruda.js)
-4. Support more WebView based browsers: [WebViewHook.kt](app/src/main/java/org/matrix/chromext/hook/WebViewHook.kt)
+2. Tampermonkey API: [Local.kt](app/src/main/java/org/matrix/chromext/script/Local.kt)
+and [GM.js](app/src/main/assets/GM.js)
+3. Eruda configuration: [eruda.js](app/src/main/assets/eruda.js)
+4. Support more WebView based browsers: [WebView.kt](app/src/main/java/org/matrix/chromext/hook/WebView.kt)
 
 ## Development plans
 
@@ -182,6 +186,7 @@ and [local_script.js](app/src/main/assets/local_script.js)
 - [x] Convert exported bookmarks to HTML format
 - [x] Show executed scripts on current page
 - [x] Make a YouTube presentation video
+- [x] Support Samsung Internet browser
 - [ ] Use `iframe` and local server to run general [WebExtensions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions)
 - [ ] Support importing UserScripts from Tampermonkey exports
 - [ ] Support backup and restore
