@@ -1,4 +1,4 @@
 Add UserScript and DevTools supports to Chromium based and WebView based browsers using Xposed framework.
 
-For example, Android Chrome, Edge, Vivaldi, Bromite, and FOSS browsers are supported.
+For example, Android Chrome, Edge, Vivaldi, Samsung Internet, Bromite, and FOSS browsers are supported.
 See README for some other bonus features.
