@@ -141,7 +141,7 @@ Before you submit your pull-requests, please ensure that the command
 `./gradlew build` or `gradlew.bat build` produces no warnings and no errors.
 
 Here are corresponding files you might want / need to change:
-1. Front end: [manager.vue](https://github.com/JingMatrix/viteblog/tree/master/components/ChromeXt/manager.vue)
+1. Front end: [manager.vue](https://github.com/JingMatrix/jingmatrix.github.io/tree/main/components/ChromeXt/manager.vue)
 2. Tampermonkey API: [Local.kt](app/src/main/java/org/matrix/chromext/script/Local.kt)
 and [GM.js](app/src/main/assets/GM.js)
 3. Eruda configuration: [eruda.js](app/src/main/assets/eruda.js)
@@ -191,7 +191,9 @@ and [GM.js](app/src/main/assets/GM.js)
 - [x] Improve valid UserScripts Url detection
 - [ ] Save and present script errors and `GM_log` logs
 - [ ] Use `iframe` and local server to run general [WebExtensions](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions)
+- [ ] Bypass `style-src` rule for `eruda`, such as Mastodon
 - [ ] Support importing UserScripts from Tampermonkey exports
 - [ ] Support backup and restore
 - [ ] Add recommended UserScripts to the front end manager
 - [x] Add [chrome devtools front-end](https://chromium.googlesource.com/devtools/devtools-frontend/) for Edge, see [devtools_http_handler.cc](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_http_handler.cc) as reference.
+- [x] Hide inserted menu for non-page
