@@ -1,5 +1,7 @@
 # ChromeXt
 
+[![Build](https://img.shields.io/github/actions/workflow/status/JingMatrix/ChromeXt/android.yml?branch=master&logo=github&label=Build&event=push)](https://github.com/JingMatrix/ChromeXt/actions/workflows/android.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Download](https://img.shields.io/github/v/release/JingMatrix/ChromeXt?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/JingMatrix/ChromeXt/releases/latest) [![Total](https://shields.io/github/downloads/JingMatrix/ChromeXt/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/JingMatrix/ChromeXt/releases)
+
 Add UserScript and DevTools supports to Chromium based and WebView based browsers using Xposed framework.
 
 ##  How does it work?
@@ -48,7 +50,7 @@ Currently, ChromeXt supports almost all [Tampermonkey APIs](https://www.tampermo
 3. @include = @match, @exclude
 4. @run-at: document-start, document-end, document-idle (the default and fallback value)
 5. @grant: GM_addStyle, GM_addElement, GM_xmlhttpRequest, GM_openInTab, GM_registerMenuCommand (shown in the `Resources` panel of eruda), GM_unregisterMenuCommand, GM_download, unsafeWindow (= window)
-6. @grant: GM_setValue, GM_getValue (less powerful than GM.getValue), GM_listValues, GM_addValueChangeListener, GM_removeValueChangeListener, GM_setClipboard, GM_cookie, GM_notification
+6. @grant: GM_setValue, GM_getValue (less powerful than GM.getValue), GM_listValues, GM_addValueChangeListener, GM_removeValueChangeListener, GM_setClipboard, GM_cookie, GM_notification, window.close
 7. @require, @resource (without [Subresource Integrity](https://www.tampermonkey.net/documentation.php#api:Subresource_Integrity))
 
 These APIs are implemented differently from the official ones, please refer to the source files
